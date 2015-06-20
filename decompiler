@@ -1,0 +1,50 @@
+#!/bin/sh
+
+echo "Welcome on Minecraft Decompiler !"
+echo "Type ./decompiler obf for decompile Minecraft 1.8.7 without deobfuscating it"
+echo "Type ./decompiler deobf for decompile Minecraft 1.8 and Minecraft Server 1.8.7"
+export aaa=$1
+
+if [ -z $1 ]
+then export aaa="0"
+fi
+
+if [ $aaa = "deobf" ]
+then mkdir conf data
+cd conf
+wget http://export.mcpbot.bspk.rs/fields.csv -O fields.csv
+wget http://export.mcpbot.bspk.rs/methods.csv -O methods.csv
+wget http://export.mcpbot.bspk.rs/params.csv -O params.csv
+wget https://raw.githubusercontent.com/MinecraftForge/FML/master/conf/joined.srg -O joined.srg
+wget "https://hub.spigotmc.org/stash/plugins/servlet/archive/projects/SPIGOT/repos/builddata?at=refs%2Fheads%2Fmaster" -O builddata.zip
+unzip builddata.zip
+cd ..
+wget https://s3.amazonaws.com/Minecraft.Download/versions/1.8/1.8.jar -O minecraft.jar
+wget https://s3.amazonaws.com/Minecraft.Download/versions/1.8.7/minecraft_server.1.8.7.jar -O minecraft_server.jar 
+java -jar SpecialSource.jar --in-jar minecraft.jar --out-jar deobfuscated.jar --srg-in conf/
+java -jar fernflower.jar -dgs=1 -hdc=0 -rbr=0 -asc=1 -udv=0 deobfuscated.jar data/
+cd data
+unzip deobfuscated.jar
+rm deobfuscated.jar
+cd ..
+mv data client_src
+mkdir data
+java -jar SpecialSource-2.jar map -i minecraft_server.jar -m conf/mappings/bukkit-*-cl.csrg -o minecraft_servermapped.jar
+java -jar SpecialSource-2.jar map -i minecraft_servermapped.jar -m conf/mappings/bukkit-*-members.csrg -o minecraft_servermappedd.jar
+java -jar SpecialSource.jar map -i minecraft_servermappedd.jar --access-transformer conf/mappings/bukkit-*.at -m conf/mappings/package.srg -o minecraft_servermappeddd.jar
+java -jar fernflower.jar -dgs=1 -hdc=0 -rbr=0 -asc=1 -udv=0 minecraft_servermappeddd.jar data/
+cd data
+unzip minecraft_servermappeddd.jar
+cd ..
+mv data server_src
+rm -rf conf
+fi
+
+if [ $aaa = "obf" ]
+then wget https://s3.amazonaws.com/Minecraft.Download/versions/1.8.7/1.8.7.jar -O minecraft.jar
+java -jar fernflower.jar -dgs=1 -hdc=0 -rbr=0 -asc=1 -udv=0  minecraft.jar data/
+cd data
+unzip minecraft.jar
+rm minecraft.jar
+cd ..
+fi
