@@ -4,7 +4,7 @@ echo "Welcome on Minecraft Decompiler !"
 echo "Type ./decompiler obf 1.8.7 for decompile Minecraft 1.8.7 without deobfuscating it"
 echo "Type ./decompiler deobf 1.8.7 for decompile Minecraft 1.8 and Minecraft Server 1.8.7"
 export aaa=$1
-
+rm -r server_src client_src  &> /dev/null
 if [ -z $1 ]
 then export aaa="0"
 fi
