@@ -14,6 +14,7 @@ export bbb=$2
 if [ -z $2 ]
 then export bbb="0"
 fi
+echo $bbb > version
 
 if [ $aaa = "deobf" ]
 then mkdir conf data
