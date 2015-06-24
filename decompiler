@@ -9,6 +9,12 @@ if [ -z $1 ]
 then export aaa="0"
 fi
 
+export bbb=$2
+
+if [ -z $2 ]
+then export bbb="0"
+fi
+
 if [ $aaa = "deobf" ]
 then mkdir conf data
 cd conf
@@ -20,7 +26,7 @@ wget "https://hub.spigotmc.org/stash/plugins/servlet/archive/projects/SPIGOT/rep
 unzip builddata.zip
 cd ..
 wget https://s3.amazonaws.com/Minecraft.Download/versions/1.8/1.8.jar -O minecraft.jar
-wget https://s3.amazonaws.com/Minecraft.Download/versions/1.8.7/minecraft_server.1.8.7.jar -O minecraft_server.jar 
+wget https://s3.amazonaws.com/Minecraft.Download/versions/$bbb/minecraft_server.$bbb.jar -O minecraft_server.jar 
 java -jar SpecialSource.jar --in-jar minecraft.jar --out-jar deobfuscated.jar --srg-in conf/
 java -jar fernflower.jar -dgs=1 -hdc=0 -rbr=0 -asc=1 -udv=0 deobfuscated.jar data/
 cd data
@@ -41,7 +47,7 @@ rm -rf conf
 fi
 
 if [ $aaa = "obf" ]
-then wget https://s3.amazonaws.com/Minecraft.Download/versions/1.8.7/1.8.7.jar -O minecraft.jar
+then wget https://s3.amazonaws.com/Minecraft.Download/versions/$bbb/$bbb.jar -O minecraft.jar
 java -jar fernflower.jar -dgs=1 -hdc=0 -rbr=0 -asc=1 -udv=0  minecraft.jar data/
 cd data
 unzip minecraft.jar
